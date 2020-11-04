@@ -111,34 +111,40 @@ const Offers = () => {
 
     return (
         <Wrapper>
-            {!quotesCount && <NoQuotes>No quotes here</NoQuotes>}
-
-            {!selectedQuote && quotesCount > 0 && (
+            {!selectedQuote && (
                 <>
-                    <Header>
-                        <SummaryRow>
-                            <Left>
-                                <Text>{`${quotesRequest.sendStringAmount} ${quotesRequest.send}`}</Text>
-                                <StyledCoinLogo size={21} symbol={account.symbol} />
-                                <StyledIcon icon="ARROW_RIGHT" />
-                                <InvityCoinLogo
-                                    src={`${invityAPI.server}/images/coins/${quotesRequest.receive}.svg`}
-                                />
-                                <Text>{quotesRequest.receive}</Text>
-                            </Left>
-                            <Right>
-                                <RefreshLabel>
-                                    <Translation id="TR_EXCHANGE_OFFERS_REFRESH" />
-                                </RefreshLabel>
-                                <RefreshTime>
-                                    {Math.max(0, REFETCH_INTERVAL / 1000 - seconds)}s
-                                </RefreshTime>
-                            </Right>
-                        </SummaryRow>
-                    </Header>
-
-                    {fixedQuotes?.length && <List quotes={fixedQuotes} isFixed />}
-                    {floatQuotes?.length && <List quotes={floatQuotes} />}
+                    {!quotesCount && (
+                        <NoQuotes>
+                            <Translation id="TR_EXCHANGE_NO_OFFERS" />
+                        </NoQuotes>
+                    )}
+                    {quotesCount > 0 && (
+                        <>
+                            <Header>
+                                <SummaryRow>
+                                    <Left>
+                                        <Text>{`${quotesRequest.sendStringAmount} ${quotesRequest.send}`}</Text>
+                                        <StyledCoinLogo size={21} symbol={account.symbol} />
+                                        <StyledIcon icon="ARROW_RIGHT" />
+                                        <InvityCoinLogo
+                                            src={`${invityAPI.server}/images/coins/${quotesRequest.receive}.svg`}
+                                        />
+                                        <Text>{quotesRequest.receive}</Text>
+                                    </Left>
+                                    <Right>
+                                        <RefreshLabel>
+                                            <Translation id="TR_EXCHANGE_OFFERS_REFRESH" />
+                                        </RefreshLabel>
+                                        <RefreshTime>
+                                            {Math.max(0, REFETCH_INTERVAL / 1000 - seconds)}s
+                                        </RefreshTime>
+                                    </Right>
+                                </SummaryRow>
+                            </Header>
+                            {fixedQuotes?.length > 0 && <List quotes={fixedQuotes} isFixed />}
+                            {floatQuotes?.length > 0 && <List quotes={floatQuotes} />}
+                        </>
+                    )}
                 </>
             )}
             {selectedQuote && <SelectedOffer />}

@@ -258,6 +258,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Refresh in',
         id: 'TR_EXCHANGE_OFFERS_REFRESH',
     },
+    TR_EXCHANGE_NO_OFFERS: {
+        defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
+        id: 'TR_EXCHANGE_NO_OFFERS',
+    },
     TR_EXCHANGE_FOR_YOUR_SAFETY: {
         defaultMessage: 'For your safety',
         id: 'TR_EXCHANGE_FOR_YOUR_SAFETY',
