@@ -262,6 +262,16 @@ const definedMessages = defineMessages({
         defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
         id: 'TR_EXCHANGE_NO_OFFERS',
     },
+    TR_EXCHANGE_OFFER_ERROR_MINIMUM: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_EXCHANGE_OFFER_ERROR_MAXIMUM: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+        id: 'TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO',
+    },
     TR_EXCHANGE_FOR_YOUR_SAFETY: {
         defaultMessage: 'For your safety',
         id: 'TR_EXCHANGE_FOR_YOUR_SAFETY',

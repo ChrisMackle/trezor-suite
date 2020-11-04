@@ -5,6 +5,7 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
 import CoinmarketExchangeProviderInfo from '@wallet-components/CoinmarketExchangeProviderInfo';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 
 const Wrapper = styled.div`
@@ -90,7 +91,7 @@ const Value = styled.div`
 const ErrorFooter = styled.div`
     display: flex;
     margin: 0 30px;
-    padding: 10px 0;
+    padding: 20px 0;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
     color: ${colors.RED_ERROR};
 `;
@@ -116,10 +117,39 @@ interface Props {
     quote: ExchangeTrade;
 }
 
+function getQuoteError(quote: ExchangeTrade) {
+    if (quote.min && Number(quote.sendStringAmount) < quote.min) {
+        return (
+            <Translation
+                id="TR_EXCHANGE_OFFER_ERROR_MINIMUM"
+                values={{
+                    amount: formatCryptoAmount(Number(quote.sendStringAmount)),
+                    min: formatCryptoAmount(quote.min),
+                    currency: quote.send,
+                }}
+            />
+        );
+    }
+    if (quote.max && quote.max !== 'NONE' && Number(quote.sendStringAmount) > quote.max) {
+        return (
+            <Translation
+                id="TR_EXCHANGE_OFFER_ERROR_MAXIMUM"
+                values={{
+                    amount: formatCryptoAmount(Number(quote.sendStringAmount)),
+                    max: formatCryptoAmount(quote.max),
+                    currency: quote.send,
+                }}
+            />
+        );
+    }
+    return quote.error;
+}
+
 const Quote = ({ className, quote }: Props) => {
     const { selectQuote, exchangeInfo } = useCoinmarketExchangeOffersContext();
     const hasTag = false;
-    const { exchange, error, receive, receiveStringAmount } = quote;
+    const { exchange, receive, receiveStringAmount } = quote;
+    const errorQuote = isQuoteError(quote);
 
     const provider =
         exchangeInfo?.providerInfos && exchange ? exchangeInfo?.providerInfos[exchange] : null;
@@ -128,8 +158,8 @@ const Quote = ({ className, quote }: Props) => {
         <Wrapper className={className}>
             <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
             <Main>
-                {error && <Left>N/A</Left>}
-                {!error && (
+                {errorQuote && <Left>N/A</Left>}
+                {!errorQuote && (
                     <Left>{`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}</Left>
                 )}
                 <Right>
@@ -158,12 +188,12 @@ const Quote = ({ className, quote }: Props) => {
                     <Value>{provider?.kycPolicy}</Value>
                 </Column>
             </Details>
-            {error && (
+            {errorQuote && (
                 <ErrorFooter>
                     <IconWrapper>
                         <StyledIcon icon="CROSS" size={12} color={colors.RED_ERROR} />
                     </IconWrapper>
-                    <ErrorText>{error}</ErrorText>
+                    <ErrorText>{getQuoteError(quote)}</ErrorText>
                 </ErrorFooter>
             )}
         </Wrapper>
