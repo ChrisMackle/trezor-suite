@@ -60,10 +60,12 @@ const BuyCryptoInput = () => {
     const amount = getValues(buyCryptoInput);
     const [isReady] = useDebounce(
         async () => {
-            await compose({
-                setMax: false,
-                amount,
-            });
+            if (amount !== '') {
+                await compose({
+                    setMax: false,
+                    amount,
+                });
+            }
         },
         333,
         [amount],
