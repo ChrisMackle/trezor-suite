@@ -3,6 +3,7 @@ import React from 'react';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FIAT } from '@suite-config';
 import styled from 'styled-components';
+import { useDebounce } from 'react-use';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
@@ -41,6 +42,8 @@ const BuyCryptoInput = () => {
         setMax,
         updateFiatValue,
         setValue,
+        getValues,
+        setIsComposing,
     } = useCoinmarketExchangeFormContext();
     const buyCryptoInput = 'buyCryptoInput';
     const fiatInput = 'fiatInput';
@@ -54,6 +57,18 @@ const BuyCryptoInput = () => {
             ? formatNetworkAmount(account.misc.reserve, account.symbol)
             : undefined;
     const decimals = tokenData ? tokenData.decimals : network.decimals;
+    const amount = getValues(buyCryptoInput);
+    const [isReady] = useDebounce(
+        () => {
+            compose({
+                setMax: false,
+                amount,
+            });
+        },
+        333,
+        [amount],
+    );
+    setIsComposing(!isReady() || false);
 
     return (
         <StyledInput
@@ -66,10 +81,6 @@ const BuyCryptoInput = () => {
                 updateFiatValue(event.target.value);
                 clearErrors(fiatInput);
                 setMax(false);
-                compose({
-                    setMax: false,
-                    amount: event.target.value,
-                });
             }}
             state={errors[buyCryptoInput] ? 'error' : undefined}
             name={buyCryptoInput}

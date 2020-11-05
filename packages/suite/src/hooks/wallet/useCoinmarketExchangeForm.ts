@@ -270,6 +270,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         isLoading,
         noProviders,
         network,
+        setIsComposing,
     };
 };
 

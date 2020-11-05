@@ -88,4 +88,5 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
     noProviders: boolean;
     network: Network;
     feeInfo: FeeInfo;
+    setIsComposing: (isComposing: boolean) => void;
 };
