@@ -135,14 +135,14 @@ const Fees = () => {
                     <SelectBar
                         selectedOption={selectedFee}
                         options={buildFeeOptions(feeInfo.levels)}
-                        onChange={(value: any) => {
+                        onChange={async (value: any) => {
                             selectFee(value);
                             if (value === 'custom' && selectedFeeLevel.label !== 'custom') {
                                 setValue('feePerUnit', selectedFeeLevel.feePerUnit);
                             } else {
                                 clearErrors('feePerUnit');
                             }
-                            compose({
+                            await compose({
                                 fillValue: isMax,
                                 setMax: isMax,
                                 feeLevelLabel: value,

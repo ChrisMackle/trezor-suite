@@ -52,7 +52,7 @@ const CustomFee = ({ isVisible }: Props) => {
                 wrapperProps={{ width: '120' }}
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
-                onChange={event => {
+                onChange={async event => {
                     if (!feePerUnitError) {
                         compose({
                             fillValue: isMax,

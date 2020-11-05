@@ -50,9 +50,9 @@ const Bottom = () => {
         <Wrapper>
             <Left>
                 <Button
-                    onClick={() => {
+                    onClick={async () => {
                         setMax(true);
-                        compose({
+                        await compose({
                             setMax: true,
                             fillValue: true,
                         });
@@ -63,7 +63,7 @@ const Bottom = () => {
                 <Button
                     onClick={async () => {
                         setMax(false);
-                        compose({
+                        await compose({
                             setMax: false,
                             fillValue: true,
                             amount: tokenData
@@ -81,7 +81,7 @@ const Bottom = () => {
                 <Button
                     onClick={async () => {
                         setMax(false);
-                        compose({
+                        await compose({
                             setMax: false,
                             fillValue: true,
                             amount: tokenData

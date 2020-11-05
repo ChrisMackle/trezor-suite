@@ -38,7 +38,7 @@ const BuyCryptoSelect = () => {
             render={({ onChange, value }) => {
                 return (
                     <CleanSelect
-                        onChange={(selected: any) => {
+                        onChange={async (selected: any) => {
                             setMax(false);
                             onChange(selected);
                             setAmountLimits(undefined);
@@ -48,7 +48,7 @@ const BuyCryptoSelect = () => {
                             } else {
                                 setToken(lowerCaseToken);
                             }
-                            compose({ token: lowerCaseToken });
+                            await compose({ token: lowerCaseToken });
                         }}
                         formatOptionLabel={(option: any) => {
                             return (

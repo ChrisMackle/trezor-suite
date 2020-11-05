@@ -59,8 +59,8 @@ const BuyCryptoInput = () => {
     const decimals = tokenData ? tokenData.decimals : network.decimals;
     const amount = getValues(buyCryptoInput);
     const [isReady] = useDebounce(
-        () => {
-            compose({
+        async () => {
+            await compose({
                 setMax: false,
                 amount,
             });
@@ -68,7 +68,7 @@ const BuyCryptoInput = () => {
         333,
         [amount],
     );
-    setIsComposing(!isReady() || false);
+    setIsComposing(!isReady());
 
     return (
         <StyledInput
