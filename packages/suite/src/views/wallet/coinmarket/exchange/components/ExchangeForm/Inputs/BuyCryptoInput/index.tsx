@@ -65,6 +65,8 @@ const BuyCryptoInput = () => {
                     setMax: false,
                     amount,
                 });
+            } else {
+                setIsComposing(false);
             }
         },
         333,

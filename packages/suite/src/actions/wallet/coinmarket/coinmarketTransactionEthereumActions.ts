@@ -213,8 +213,8 @@ export const signTransaction = (data: SignTransactionData) => async (
     const { device } = getState().suite;
     if (selectedAccount.status !== 'loaded' || !device || !data.transactionInfo) return;
 
-    const { account, network } = selectedAccount;
-    if (account.networkType !== 'ethereum' || !network.chainId) return;
+    const { account } = selectedAccount;
+    if (account.networkType !== 'ethereum' || !data.network.chainId) return;
 
     // Ethereum account `misc.nonce` is not updated before pending tx is mined
     // Calculate `pendingNonce`: greatest value in pending tx + 1

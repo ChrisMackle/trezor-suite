@@ -164,7 +164,6 @@ export const signTransaction = (data: SignTransactionData) => async (
     // transactionInfo needs some additional changes:
     const { account } = selectedAccount;
     const { transaction } = transactionInfo;
-
     let signEnhancement: Partial<SignTransaction> = {};
 
     // enhance signTransaction params for zcash (version_group_id etc.)

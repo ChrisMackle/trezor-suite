@@ -170,6 +170,14 @@ export const signTransaction = (signTransactionData: SignTransactionData) => asy
 ) => {
     const { account } = signTransactionData;
 
+    console.log(
+        JSON.stringify({
+            address: signTransactionData.address,
+            amount: signTransactionData.amount,
+            transactionInfo: signTransactionData.transactionInfo,
+        }),
+    );
+
     if (!account) return;
 
     let reviewData: ReviewTransactionData | undefined;
