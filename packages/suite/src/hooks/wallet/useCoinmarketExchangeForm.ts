@@ -51,63 +51,34 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const { register, setValue, getValues, setError } = methods;
     const [token, setToken] = useState<string | undefined>(getValues('buyCryptoSelect')?.value);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    const [setMax, setSetMax] = useState<boolean | undefined>(undefined);
+    const [isMax, setIsMax] = useState<boolean | undefined>(undefined);
     const [isComposing, setIsComposing] = useState<boolean>(false);
     const [transactionInfo, setTransactionInfo] = useState<null | PrecomposedTransactionFinal>(
         null,
     );
     const [selectedFee, selectFee] = useState<FeeLevel['label']>('normal');
+    const [storedPlaceholderAddress, setStoredPlaceholderAddress] = useState<string | undefined>();
     const {
         saveQuoteRequest,
         saveQuotes,
         saveTrade,
         composeTransaction,
         saveComposedTransaction,
+        goto,
     } = useActions({
         saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
         saveQuotes: coinmarketExchangeActions.saveQuotes,
         saveTrade: coinmarketExchangeActions.saveTrade,
         composeTransaction: coinmarketCommonActions.composeTransaction,
         saveComposedTransaction: coinmarketCommonActions.saveComposedTransaction,
+        goto: routerActions.goto,
     });
-
-    const { goto } = useActions({ goto: routerActions.goto });
-
-    const onSubmit = async () => {
-        const formValues = methods.getValues();
-        const sendStringAmount = formValues.buyCryptoInput || '';
-        const send = formValues.buyCryptoSelect.value;
-        const receive = formValues.sellCryptoSelect.value;
-        const request: ExchangeTradeQuoteRequest = {
-            receive,
-            send,
-            sendStringAmount,
-        };
-
-        saveQuoteRequest(request);
-        const allQuotes = await invityAPI.getExchangeQuotes(request);
-        const limits = getAmountLimits(allQuotes);
-
-        if (limits) {
-            setAmountLimits(limits);
-        } else {
-            const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
-            saveQuotes(fixedQuotes, floatQuotes);
-            goto('wallet-coinmarket-exchange-offers', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
-        }
-    };
 
     const updateFiatValue = (amount: string) => {
         const currency: { value: string; label: string } | undefined = getValues('fiatSelect');
         if (!fiatRates || !fiatRates.current || !currency) return;
         const fiatValue = toFiatCurrency(amount, currency.value, fiatRates.current.rates);
-        if (fiatValue) {
-            setValue('fiatInput', fiatValue, { shouldValidate: true });
-        }
+        setValue('fiatInput', fiatValue || '', { shouldValidate: true });
     };
 
     const getComposeAddressPlaceholder = async () => {
@@ -151,6 +122,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     };
 
     const compose = async (data: ComposeData) => {
+        let ok = false;
         setIsComposing(true);
         const formValues = getValues();
         const token =
@@ -158,17 +130,25 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         const feeLevel = feeInfo.levels.find(level => level.label === data.feeLevelLabel);
         const selectedFeeLevel =
             feeLevel || feeInfo.levels.find(level => level.label === selectedFee);
-        if (!selectedFeeLevel) return null;
-        const placeholderAddress = await getComposeAddressPlaceholder();
+        if (!selectedFeeLevel) return false;
+
+        let placeholderAddress = storedPlaceholderAddress;
+        if (!placeholderAddress) {
+            placeholderAddress = await getComposeAddressPlaceholder();
+            setStoredPlaceholderAddress(placeholderAddress);
+        }
+
+        let { feePerUnit } = selectedFeeLevel;
+        if (selectedFeeLevel.label === 'custom') {
+            feePerUnit = data?.feePerUnit ? data.feePerUnit : formValues.feePerUnit || '0';
+        }
 
         const result: PrecomposedLevels | undefined = await composeTransaction({
             account,
             amount: data && data.amount ? data.amount : formValues.buyCryptoInput || '0',
             feeInfo,
-            feePerUnit:
-                data && data.feePerUnit ? data.feePerUnit || '0' : selectedFeeLevel.feePerUnit,
-            feeLimit:
-                data && data.feeLimit ? data.feeLimit || '0' : selectedFeeLevel.feeLimit || '0',
+            feePerUnit,
+            feeLimit: data && data.feeLimit ? data.feeLimit : selectedFeeLevel.feeLimit || '0',
             network,
             selectedFee,
             isMaxActive: data && data.setMax ? data.setMax || false : false,
@@ -193,6 +173,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 updateFiatValue(amountToFill);
             }
             saveComposedTransaction(transactionInfo);
+            methods.clearErrors('buyCryptoInput');
+            ok = true;
         }
 
         if (transactionInfo?.type === 'error') {
@@ -207,6 +189,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         }
 
         setIsComposing(false);
+        return ok;
     };
 
     const updateFiatCurrency = (currency: { label: string; value: string }) => {
@@ -228,15 +211,44 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             decimals,
         );
 
-        if (cryptoValue) {
-            setValue('buyCryptoInput', cryptoValue, { shouldValidate: true });
-        }
+        setValue('buyCryptoInput', cryptoValue || '', { shouldValidate: true });
     };
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
     const isLoading = !exchangeInfo?.exchangeList || exchangeInfo?.exchangeList.length === 0;
     const noProviders =
         exchangeInfo?.exchangeList?.length === 0 || !exchangeInfo?.sellSymbols.has(account.symbol);
+
+    const onSubmit = async () => {
+        const formValues = methods.getValues();
+        const sendStringAmount = formValues.buyCryptoInput || '';
+        const send = formValues.buyCryptoSelect.value;
+        const receive = formValues.sellCryptoSelect.value;
+        const request: ExchangeTradeQuoteRequest = {
+            receive,
+            send,
+            sendStringAmount,
+        };
+
+        const ok = await compose({ setMax: isMax });
+        if (ok) {
+            saveQuoteRequest(request);
+            const allQuotes = await invityAPI.getExchangeQuotes(request);
+            const limits = getAmountLimits(allQuotes);
+
+            if (limits) {
+                setAmountLimits(limits);
+            } else {
+                const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
+                saveQuotes(fixedQuotes, floatQuotes);
+                goto('wallet-coinmarket-exchange-offers', {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                });
+            }
+        }
+    };
 
     return {
         ...methods,
@@ -245,10 +257,10 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         updateFiatValue,
         register: typedRegister,
         exchangeInfo,
-        isMax: setMax || false,
+        isMax: isMax || false,
         setToken,
         saveQuoteRequest,
-        setMax: setSetMax,
+        setMax: setIsMax,
         saveQuotes,
         quotesRequest,
         transactionInfo,

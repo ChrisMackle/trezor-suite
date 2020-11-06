@@ -33,17 +33,15 @@ const BuyCryptoInput = () => {
         register,
         errors,
         clearErrors,
-        trigger,
         network,
         account,
         amountLimits,
         compose,
         token,
+        isMax,
         setMax,
         updateFiatValue,
-        setValue,
         getValues,
-        setIsComposing,
     } = useCoinmarketExchangeFormContext();
     const buyCryptoInput = 'buyCryptoInput';
     const fiatInput = 'fiatInput';
@@ -58,29 +56,21 @@ const BuyCryptoInput = () => {
             : undefined;
     const decimals = tokenData ? tokenData.decimals : network.decimals;
     const amount = getValues(buyCryptoInput);
-    const [isReady] = useDebounce(
+    useDebounce(
         async () => {
-            if (amount !== '') {
+            if (amount !== '' && !isMax) {
                 await compose({
                     setMax: false,
                     amount,
                 });
-            } else {
-                setIsComposing(false);
             }
         },
         333,
         [amount],
     );
-    setIsComposing(!isReady());
 
     return (
         <StyledInput
-            onFocus={() => {
-                setValue(fiatInput, '');
-                clearErrors(fiatInput);
-                trigger([buyCryptoInput]);
-            }}
             onChange={async event => {
                 updateFiatValue(event.target.value);
                 clearErrors(fiatInput);
