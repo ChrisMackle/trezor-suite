@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import BuyCryptoInput from './BuyCryptoInput';
+import ReceiveCryptoInput from './ReceiveCryptoInput';
 import FiatInput from './FiatInput';
-import SellCryptoSelect from './SellCryptoSelect';
+import SendCryptoSelect from './SendCryptoSelect';
 import Buttons from './Buttons';
 
 const Wrapper = styled.div`
@@ -56,21 +56,21 @@ const Inputs = () => {
     const formattedToken = invityApiSymbolToSymbol(token);
     const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
     useEffect(() => {
-        trigger(['buyCryptoInput']);
+        trigger(['receiveCryptoInput']);
     }, [amountLimits, trigger]);
 
     return (
         <Wrapper>
             <Top>
                 <LeftWrapper>
-                    <BuyCryptoInput />
+                    <ReceiveCryptoInput />
                     {!tokenData && <FiatInput />}
                 </LeftWrapper>
                 <MiddleWrapper>
                     <StyledIcon icon="TRANSFER" size={16} />
                 </MiddleWrapper>
                 <RightWrapper>
-                    <SellCryptoSelect />
+                    <SendCryptoSelect />
                 </RightWrapper>
             </Top>
             <Buttons />

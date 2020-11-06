@@ -150,7 +150,7 @@ const VerifyAddressComponent = () => {
         confirmTrade,
         selectedQuote,
         addressVerified,
-        suiteBuyAccounts,
+        suiteReceiveAccounts,
         receiveSymbol,
         setReceiveAccount,
     } = useCoinmarketExchangeOffersContext();
@@ -168,8 +168,8 @@ const VerifyAddressComponent = () => {
 
     const selectAccountOptions: AccountSelectOption[] = [];
 
-    if (suiteBuyAccounts) {
-        suiteBuyAccounts.forEach(account => {
+    if (suiteReceiveAccounts) {
+        suiteReceiveAccounts.forEach(account => {
             selectAccountOptions.push({ type: 'SUITE', account });
         });
         selectAccountOptions.push({ type: 'ADD_SUITE' });

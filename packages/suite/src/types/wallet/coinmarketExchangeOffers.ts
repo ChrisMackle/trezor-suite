@@ -28,7 +28,7 @@ export type ContextValues = {
     REFETCH_INTERVAL: number;
     device: AppState['suite']['device'];
     selectedQuote?: ExchangeTrade;
-    suiteBuyAccounts?: AppState['wallet']['accounts'];
+    suiteReceiveAccounts?: AppState['wallet']['accounts'];
     addressVerified: AppState['wallet']['coinmarket']['exchange']['addressVerified'];
     exchangeInfo?: ExchangeInfo;
     exchangeStep: ExchangeStep;

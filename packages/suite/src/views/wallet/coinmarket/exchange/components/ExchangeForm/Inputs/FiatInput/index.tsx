@@ -21,7 +21,7 @@ const FiatInput = () => {
         errors,
         trigger,
         formState,
-        updateBuyCryptoValue,
+        updateReceiveCryptoValue,
         setMax,
         setValue,
     } = useCoinmarketExchangeFormContext();
@@ -35,9 +35,9 @@ const FiatInput = () => {
             onChange={event => {
                 setMax(false);
                 if (errors[fiatInput]) {
-                    setValue('buyCryptoInput', '');
+                    setValue('receiveCryptoInput', '');
                 } else {
-                    updateBuyCryptoValue(event.target.value, network.decimals);
+                    updateReceiveCryptoValue(event.target.value, network.decimals);
                     clearErrors(fiatInput);
                 }
             }}

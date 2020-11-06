@@ -4,7 +4,7 @@ import { TradeExchange } from '@wallet-reducers/coinmarketReducer';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    transactionId: AppState['wallet']['coinmarket']['buy']['transactionId'];
+    transactionId: AppState['wallet']['coinmarket']['exchange']['transactionId'];
     trades: AppState['wallet']['coinmarket']['trades'];
 }
 

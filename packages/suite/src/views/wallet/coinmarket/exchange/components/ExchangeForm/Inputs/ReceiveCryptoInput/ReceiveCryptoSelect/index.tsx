@@ -3,7 +3,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { getSellCryptoOptions, formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
+import { getSendCryptoOptions, formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
 
 const Option = styled.div`
     display: flex;
@@ -14,7 +14,7 @@ const Label = styled.div`
     padding-left: 10px;
 `;
 
-const BuyCryptoSelect = () => {
+const ReceiveCryptoSelect = () => {
     const {
         control,
         setAmountLimits,
@@ -24,13 +24,13 @@ const BuyCryptoSelect = () => {
         setToken,
         compose,
     } = useCoinmarketExchangeFormContext();
-    const buyCryptoSelect = 'buyCryptoSelect';
+    const receiveCryptoSelect = 'receiveCryptoSelect';
     const uppercaseSymbol = account.symbol.toUpperCase();
 
     return (
         <Controller
             control={control}
-            name={buyCryptoSelect}
+            name={receiveCryptoSelect}
             defaultValue={{
                 value: uppercaseSymbol,
                 label: formatLabel(uppercaseSymbol),
@@ -60,7 +60,7 @@ const BuyCryptoSelect = () => {
                         }}
                         value={value}
                         isClearable={false}
-                        options={getSellCryptoOptions(account, exchangeInfo)}
+                        options={getSendCryptoOptions(account, exchangeInfo)}
                         isDropdownVisible={account.networkType === 'ethereum'}
                         isDisabled={account.networkType !== 'ethereum'}
                         minWidth="80px"
@@ -71,4 +71,4 @@ const BuyCryptoSelect = () => {
     );
 };
 
-export default BuyCryptoSelect;
+export default ReceiveCryptoSelect;

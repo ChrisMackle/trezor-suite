@@ -7,7 +7,7 @@ import { useDebounce } from 'react-use';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
-import BuyCryptoSelect from './BuyCryptoSelect';
+import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import { InputError } from '@wallet-components';
 import Bignumber from 'bignumber.js';
 import {
@@ -43,7 +43,7 @@ const BuyCryptoInput = () => {
         updateFiatValue,
         getValues,
     } = useCoinmarketExchangeFormContext();
-    const buyCryptoInput = 'buyCryptoInput';
+    const receiveCryptoInput = 'receiveCryptoInput';
     const fiatInput = 'fiatInput';
     const { symbol, tokens } = account;
     const tokenData = tokens?.find(t => t.symbol === invityApiSymbolToSymbol(token));
@@ -55,14 +55,19 @@ const BuyCryptoInput = () => {
             ? formatNetworkAmount(account.misc.reserve, account.symbol)
             : undefined;
     const decimals = tokenData ? tokenData.decimals : network.decimals;
-    const amount = getValues(buyCryptoInput);
+    const amount = getValues(receiveCryptoInput);
     useDebounce(
         async () => {
-            if (amount !== '' && !isMax) {
-                await compose({
-                    setMax: false,
-                    amount,
-                });
+            // take value at debounce time, the user may type fast
+            const currentAmount = getValues(receiveCryptoInput);
+            if (currentAmount && !isMax) {
+                const amountBig = new Bignumber(currentAmount);
+                if (amountBig.gte(0)) {
+                    await compose({
+                        setMax: false,
+                        amount: currentAmount,
+                    });
+                }
             }
         },
         333,
@@ -76,8 +81,8 @@ const BuyCryptoInput = () => {
                 clearErrors(fiatInput);
                 setMax(false);
             }}
-            state={errors[buyCryptoInput] ? 'error' : undefined}
-            name={buyCryptoInput}
+            state={errors[receiveCryptoInput] ? 'error' : undefined}
+            name={receiveCryptoInput}
             noTopLabel
             innerRef={register({
                 validate: (value: string) => {
@@ -151,8 +156,8 @@ const BuyCryptoInput = () => {
                     }
                 },
             })}
-            bottomText={<InputError error={errors[buyCryptoInput]} />}
-            innerAddon={<BuyCryptoSelect />}
+            bottomText={<InputError error={errors[receiveCryptoInput]} />}
+            innerAddon={<ReceiveCryptoSelect />}
         />
     );
 };

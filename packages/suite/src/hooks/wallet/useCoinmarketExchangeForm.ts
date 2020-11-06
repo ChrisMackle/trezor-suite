@@ -49,7 +49,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
     const methods = useForm<FormState>({ mode: 'onChange' });
     const { register, setValue, getValues, setError } = methods;
-    const [token, setToken] = useState<string | undefined>(getValues('buyCryptoSelect')?.value);
+    const [token, setToken] = useState<string | undefined>(getValues('receiveCryptoSelect')?.value);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const [isMax, setIsMax] = useState<boolean | undefined>(undefined);
     const [isComposing, setIsComposing] = useState<boolean>(false);
@@ -126,7 +126,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         setIsComposing(true);
         const formValues = getValues();
         const token =
-            data && data.token ? data.token : formValues.buyCryptoSelect.value || undefined;
+            data && data.token ? data.token : formValues.receiveCryptoSelect.value || undefined;
         const feeLevel = feeInfo.levels.find(level => level.label === data.feeLevelLabel);
         const selectedFeeLevel =
             feeLevel || feeInfo.levels.find(level => level.label === selectedFee);
@@ -145,7 +145,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
         const result: PrecomposedLevels | undefined = await composeTransaction({
             account,
-            amount: data && data.amount ? data.amount : formValues.buyCryptoInput || '0',
+            amount: data && data.amount ? data.amount : formValues.receiveCryptoInput || '0',
             feeInfo,
             feePerUnit,
             feeLimit: data && data.feeLimit ? data.feeLimit : selectedFeeLevel.feeLimit || '0',
@@ -169,11 +169,11 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 if (data.setMax) {
                     amountToFill = new BigNumber(transactionInfo.max || '0').toFixed(decimals);
                 }
-                setValue('buyCryptoInput', amountToFill, { shouldValidate: true });
+                setValue('receiveCryptoInput', amountToFill, { shouldValidate: true });
                 updateFiatValue(amountToFill);
             }
             saveComposedTransaction(transactionInfo);
-            methods.clearErrors('buyCryptoInput');
+            methods.clearErrors('receiveCryptoInput');
             ok = true;
         }
 
@@ -182,7 +182,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             if (error === 'NOT-ENOUGH-FUNDS') {
                 error = 'AMOUNT_IS_NOT_ENOUGH';
             }
-            setError('buyCryptoInput', {
+            setError('receiveCryptoInput', {
                 type: 'compose',
                 message: error,
             });
@@ -193,7 +193,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     };
 
     const updateFiatCurrency = (currency: { label: string; value: string }) => {
-        const amount = getValues('buyCryptoInput') || '0';
+        const amount = getValues('receiveCryptoInput') || '0';
         if (!fiatRates || !fiatRates.current || !currency) return;
         const fiatValue = toFiatCurrency(amount, currency.value, fiatRates.current.rates);
         if (fiatValue) {
@@ -201,7 +201,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         }
     };
 
-    const updateBuyCryptoValue = (amount: string, decimals: number) => {
+    const updateReceiveCryptoValue = (amount: string, decimals: number) => {
         const currency: { value: string; label: string } | undefined = getValues('fiatSelect');
         if (!fiatRates || !fiatRates.current || !currency) return;
         const cryptoValue = fromFiatCurrency(
@@ -211,7 +211,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             decimals,
         );
 
-        setValue('buyCryptoInput', cryptoValue || '', { shouldValidate: true });
+        setValue('receiveCryptoInput', cryptoValue || '', { shouldValidate: true });
     };
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
@@ -221,9 +221,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
     const onSubmit = async () => {
         const formValues = methods.getValues();
-        const sendStringAmount = formValues.buyCryptoInput || '';
-        const send = formValues.buyCryptoSelect.value;
-        const receive = formValues.sellCryptoSelect.value;
+        const sendStringAmount = formValues.receiveCryptoInput || '';
+        const send = formValues.receiveCryptoSelect.value;
+        const receive = formValues.sendCryptoSelect.value;
         const request: ExchangeTradeQuoteRequest = {
             receive,
             send,
@@ -270,7 +270,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         updateFiatCurrency,
         selectFee,
         token,
-        updateBuyCryptoValue,
+        updateReceiveCryptoValue,
         saveTrade,
         feeInfo,
         compose,

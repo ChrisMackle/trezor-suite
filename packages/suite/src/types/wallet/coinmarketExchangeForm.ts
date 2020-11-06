@@ -25,11 +25,11 @@ export interface Props extends ComponentProps {
 }
 
 export type FormState = {
-    buyCryptoInput?: string;
-    buyCryptoSelect: Option;
+    receiveCryptoInput?: string;
+    receiveCryptoSelect: Option;
     fiatInput?: string;
     fiatSelect?: Option;
-    sellCryptoSelect: Option;
+    sendCryptoSelect: Option;
     feePerUnit?: string;
 };
 
@@ -64,7 +64,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
     compose: (data: ComposeData) => void;
     selectFee: (feeLevel: FeeLevel['label']) => void;
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
-    updateBuyCryptoValue: (fiatValue: string, decimals: number) => void;
+    updateReceiveCryptoValue: (fiatValue: string, decimals: number) => void;
     saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;
     saveQuotes: (
         fixedQuotes: ExchangeTrade[],

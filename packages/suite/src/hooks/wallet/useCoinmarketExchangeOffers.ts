@@ -43,7 +43,9 @@ export const useOffers = (props: Props) => {
     const { account, network } = selectedAccount;
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
-    const [suiteBuyAccounts, setSuiteBuyAccounts] = useState<ContextValues['suiteBuyAccounts']>();
+    const [suiteReceiveAccounts, setSuiteReceiveAccounts] = useState<
+        ContextValues['suiteReceiveAccounts']
+    >();
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[]>(fixedQuotes);
     const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[]>(floatQuotes);
     const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');
@@ -126,12 +128,12 @@ export const useOffers = (props: Props) => {
                     ? device.unavailableCapabilities
                     : {};
             // is the symbol supported by the suite and the device natively
-            const buyNetworks = networks.filter(
+            const receiveNetworks = networks.filter(
                 n => n.symbol === receiveSymbol && !unavailableCapabilities[n.symbol],
             );
-            if (buyNetworks.length > 0) {
+            if (receiveNetworks.length > 0) {
                 // get accounts of the current symbol belonging to the current device
-                setSuiteBuyAccounts(
+                setSuiteReceiveAccounts(
                     accounts.filter(
                         a =>
                             a.deviceState === device?.state &&
@@ -144,7 +146,7 @@ export const useOffers = (props: Props) => {
                 return;
             }
         }
-        setSuiteBuyAccounts(undefined);
+        setSuiteReceiveAccounts(undefined);
     }, [accounts, device, exchangeStep, receiveSymbol, selectedQuote]);
 
     const confirmTrade = async (address: string, extraField?: string) => {
@@ -209,7 +211,7 @@ export const useOffers = (props: Props) => {
         confirmTrade,
         sendTransaction,
         selectedQuote,
-        suiteBuyAccounts,
+        suiteReceiveAccounts,
         verifyAddress,
         device,
         lastFetchDate,

@@ -89,7 +89,7 @@ export const splitToFixedFloatQuotes = (
     return [fixedQuotes, floatQuotes];
 };
 
-export const getSellCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {
+export const getSendCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {
     const uppercaseSymbol = account.symbol.toUpperCase();
     const options: { value: string; label: string }[] = [
         { value: uppercaseSymbol, label: uppercaseSymbol },
