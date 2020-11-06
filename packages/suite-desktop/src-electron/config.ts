@@ -30,6 +30,8 @@ export const allowedDomains = [
     'trezor.io',
     'api.github.com',
     'api.dropboxapi.com',
+    'content.dropboxapi.com',
+    'notify.dropboxapi.com',
     'o117836.ingest.sentry.io',
     onionDomain,
 ];

@@ -31,6 +31,7 @@ const ActionsContainer = styled.div<{ desktop: boolean; mobileLayout?: boolean }
         `display: flex;
         align-items: center;
         margin-left: 28px;
+        border-top: 0;
     `}
     ${props =>
         props.desktop &&
@@ -156,7 +157,6 @@ const NavigationActions = (props: Props) => {
                                     action={() => action('settings-index')}
                                 />
                             }
-                            className="dark-grey"
                             {...props}
                         >
                             <>

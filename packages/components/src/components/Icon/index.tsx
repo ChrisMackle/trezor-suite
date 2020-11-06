@@ -40,6 +40,7 @@ const SvgWrapper = styled.div<WrapperProps>`
     align-items: center;
     justify-content: center;
     height: ${props => props.size}px;
+    width: ${props => props.size}px;
     animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
         forwards;
 
@@ -113,7 +114,7 @@ const Icon = React.forwardRef(
                 isActive={isActive}
                 size={size}
                 ref={ref}
-                useCursorPointer={useCursorPointer}
+                useCursorPointer={onClick !== undefined || useCursorPointer}
                 {...rest}
             >
                 <ReactSVG

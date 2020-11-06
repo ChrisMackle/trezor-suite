@@ -114,7 +114,7 @@ export const onCancel = (): ModalAction => ({
 /**
  * Called from <PinModal /> component
  * Sends pin to `trezor-connect`
- * @param {string} value
+ * @param {string} payload
  * @returns
  */
 export const onPinSubmit = (payload: string) => () => {
@@ -128,7 +128,9 @@ export const onPinCancel = () => {
 /**
  * Called from <PassphraseModal /> component
  * Sends passphrase to `trezor-connect`
- * @param {string} passphrase
+ * @param {string} value
+ * @param {boolean} passphraseOnDevice
+ * @param {boolean} hasEmptyPassphraseWallet
  */
 export const onPassphraseSubmit = (
     value: string,

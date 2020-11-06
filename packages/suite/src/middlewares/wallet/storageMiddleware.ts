@@ -128,6 +128,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case ANALYTICS.INIT:
+        case ANALYTICS.ENABLE:
         case ANALYTICS.DISPOSE:
             api.dispatch(storageActions.saveAnalytics());
             break;
