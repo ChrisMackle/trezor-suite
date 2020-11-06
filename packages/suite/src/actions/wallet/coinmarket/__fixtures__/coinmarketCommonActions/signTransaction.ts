@@ -108,7 +108,8 @@ export const ETH_SIGN_TRANSACTION_FIXTURES = [
                 device: AVAILABLE_DEVICE,
             },
             wallet: {
-                selectedAccount: { status: 'loaded', account: ETH_ACCOUNT },
+                selectedAccount: { status: 'loaded', account: XRP_ACCOUNT },
+                transactions: [{}],
             },
         },
         params: {

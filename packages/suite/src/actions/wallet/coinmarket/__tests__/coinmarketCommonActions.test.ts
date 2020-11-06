@@ -10,6 +10,7 @@ import { ReviewTransactionData } from '@suite/types/wallet/transaction';
 import { COMPOSE_TRANSACTION_FIXTURES } from '../__fixtures__/coinmarketCommonActions/compose';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
 import { VERIFY_ADDRESS_FIXTURES } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
+import transactionReducer from '@wallet-reducers/transactionReducer';
 
 export const getInitialState = (initial = {}) => {
     return {
@@ -25,11 +26,11 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { coinmarket } = store.getState().wallet;
-        const { selectedAccount } = store.getState().wallet;
+        const { coinmarket, selectedAccount, transactions } = store.getState().wallet;
         store.getState().wallet = {
             coinmarket: coinmarketReducer(coinmarket, action),
             selectedAccount: selectedAccountReducer({ ...selectedAccount }, action),
+            transactions: transactionReducer(transactions, action),
         };
         store.getActions().push(action);
     });

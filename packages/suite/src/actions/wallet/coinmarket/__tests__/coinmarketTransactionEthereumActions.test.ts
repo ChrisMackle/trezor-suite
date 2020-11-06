@@ -6,7 +6,8 @@ import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 import * as coinmarketTransactionEthereumActions from '../coinmarketTransactionEthereumActions';
 import { ETH_SIGN_TRANSACTION_FIXTURES } from '../__fixtures__/coinmarketCommonActions/signTransaction';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
-import selectedAccountReducer from '@suite/reducers/wallet/selectedAccountReducer';
+import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
+import transactionReducer from '@wallet-reducers/transactionReducer';
 
 export const getInitialState = (initial = {}) => {
     return {
@@ -23,11 +24,11 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { coinmarket } = store.getState().wallet;
-        const { selectedAccount } = store.getState().wallet;
+        const { coinmarket, selectedAccount, transactions } = store.getState().wallet;
         store.getState().wallet = {
             coinmarket: coinmarketReducer(coinmarket, action),
             selectedAccount: selectedAccountReducer({ ...selectedAccount }, action),
+            transactions: transactionReducer(transactions, action),
         };
         store.getActions().push(action);
     });
@@ -118,9 +119,6 @@ describe('Coinmarket Transaction Ethereum Actions', () => {
                 coinmarketTransactionEthereumActions.signTransaction(f.params.data),
             );
             expect(result).toMatchSnapshot();
-            if (f.result && f.result.actions) {
-                expect(store.getActions()).toMatchSnapshot();
-            }
         });
     });
 });
