@@ -29,6 +29,7 @@ import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
+import { Timerange, TimerangeProps, timerangeGlobalStyles } from './components/Timerange';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import * as types from './support/types';
 
@@ -72,6 +73,9 @@ export {
     Tooltip,
     TooltipProps,
     tooltipGlobalStyles,
+    Timerange,
+    TimerangeProps,
+    timerangeGlobalStyles,
     types,
     ConfirmOnDevice,
     ConfirmOnDeviceProps,
