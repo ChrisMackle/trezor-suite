@@ -81,7 +81,7 @@ jest.mock('trezor-connect', () => {
             getAddress,
             ethereumGetAddress: getAddress,
             rippleGetAddress: getAddress,
-            signTransaction: jest.fn(async _params => {
+            ethereumSignTransaction: jest.fn(async _params => {
                 return getNextFixture();
             }),
             blockchainEstimateFee: () => {

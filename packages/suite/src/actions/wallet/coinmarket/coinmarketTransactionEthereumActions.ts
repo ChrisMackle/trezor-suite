@@ -249,7 +249,7 @@ export const signTransaction = (data: SignTransactionData) => async (
 
     const decimals = data.transactionInfo.token
         ? data.transactionInfo.token.decimals
-        : network.decimals;
+        : data.network.decimals;
     const transaction = prepareEthereumTransaction({
         token: data.transactionInfo.token,
         chainId: data.network.chainId,
