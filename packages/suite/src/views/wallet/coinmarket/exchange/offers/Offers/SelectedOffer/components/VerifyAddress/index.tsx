@@ -393,20 +393,22 @@ const VerifyAddressComponent = () => {
                             }
                             name="extraField"
                             innerRef={typedRegister({
-                                required: (
+                                required: selectedQuote?.extraFieldDescription?.required ? (
                                     <Translation
                                         id="TR_EXCHANGE_EXTRA_FIELD_REQUIRED"
                                         values={extraFieldDescription}
                                     />
-                                ),
+                                ) : undefined,
                                 validate: value => {
                                     let valid = true;
-                                    if (selectedQuote?.extraFieldDescription?.type === 'hex') {
-                                        valid = isHexValid(value);
-                                    } else if (
-                                        selectedQuote?.extraFieldDescription?.type === 'number'
-                                    ) {
-                                        valid = isInteger(value);
+                                    if (value) {
+                                        if (selectedQuote?.extraFieldDescription?.type === 'hex') {
+                                            valid = isHexValid(value);
+                                        } else if (
+                                            selectedQuote?.extraFieldDescription?.type === 'number'
+                                        ) {
+                                            valid = isInteger(value);
+                                        }
                                     }
                                     if (!valid) {
                                         return (
